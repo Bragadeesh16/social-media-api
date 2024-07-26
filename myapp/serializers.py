@@ -26,5 +26,5 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     
 class CreateCommunitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = CreateCommunity
+        model = Community
         fields = ['community_profile','community_name',]

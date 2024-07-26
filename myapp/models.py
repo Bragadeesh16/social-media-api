@@ -21,11 +21,13 @@ def create_username(sender,instance=None,created=False,**kwargs):
         instance.username = sliced_email
         instance.save()
 
-class CreateCommunity(models.Model):
+class Community(models.Model):
     """Class is used to creating a community"""
     community_profile = models.ImageField(upload_to='community_profile',blank=True,null=True)
     community_name = models.CharField(max_length=20,unique=True)
-    author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    author = models.OneToOneField(CustomUser,on_delete=models.SET_NULL,null=True)
+    members = models.ManyToManyField(CustomUser,related_name='community_members')
+
 
 class PostCommand(models.Model):
     """Class is used to create a command """
@@ -44,7 +46,7 @@ class CommunityPost(models.Model):
     author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True,
                                related_name='author',null=True)
     liked_by = models.ManyToManyField(CustomUser,related_name='liked_by',blank=True)
-    community = models.ManyToManyField(CreateCommunity,related_name='posts')
+    community = models.ForeignKey(Community,on_delete=models.CASCADE,related_name='community',null=True)
 
     def save(self, *args, **kwargs):
         self.count = len(self.liked_by)

@@ -56,9 +56,6 @@ class CreateCommunityClass(generics.GenericAPIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self,request):
-        return Response({'you can create community'})
-
     def post(self,request,*args,**kwargs):
         serializer = CreateCommunitySerializer(data=request.data)
         if serializer.is_valid():
@@ -66,3 +63,13 @@ class CreateCommunityClass(generics.GenericAPIView):
             return Response({'message': 'Community is created'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ListCommunity(generics.GenericAPIView):
+    pass
+
+class JoinCommunity(generics.GenericAPIView):
+    pass
+
+class SearchCommunity(generics.GenericAPIView):
+    pass
+
