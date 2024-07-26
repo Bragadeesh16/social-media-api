@@ -73,3 +73,8 @@ class JoinCommunity(generics.GenericAPIView):
 class SearchCommunity(generics.GenericAPIView):
     pass
 
+class CreatePost(generics.GenericAPIView):
+    pass
+
+class DetailViewOfCommunity(generics.GenericAPIView):
+    pass
