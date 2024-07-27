@@ -8,7 +8,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("myapp", "0003_remove_createcommunity_community_type_and_more"),
+        (
+            "myapp",
+            "0003_remove_createcommunity_community_type_and_more",
+        ),
     ]
 
     operations = [
@@ -31,10 +34,15 @@ class Migration(migrations.Migration):
                 (
                     "community_profile",
                     models.ImageField(
-                        blank=True, null=True, upload_to="community_profile"
+                        blank=True,
+                        null=True,
+                        upload_to="community_profile",
                     ),
                 ),
-                ("community_name", models.CharField(max_length=20, unique=True)),
+                (
+                    "community_name",
+                    models.CharField(max_length=20, unique=True),
+                ),
                 (
                     "author",
                     models.OneToOneField(
@@ -46,7 +54,8 @@ class Migration(migrations.Migration):
                 (
                     "members",
                     models.ManyToManyField(
-                        related_name="community_members", to=settings.AUTH_USER_MODEL
+                        related_name="community_members",
+                        to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],

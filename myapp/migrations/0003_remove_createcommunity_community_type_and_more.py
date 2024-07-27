@@ -6,7 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("myapp", "0002_rename_community_post_communitypost_and_more"),
+        (
+            "myapp",
+            "0002_rename_community_post_communitypost_and_more",
+        ),
     ]
 
     operations = [
@@ -18,7 +21,9 @@ class Migration(migrations.Migration):
             model_name="createcommunity",
             name="community_profile",
             field=models.ImageField(
-                blank=True, null=True, upload_to="community_profile"
+                blank=True,
+                null=True,
+                upload_to="community_profile",
             ),
         ),
     ]
