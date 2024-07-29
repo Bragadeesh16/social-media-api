@@ -35,7 +35,7 @@ def user_register(request):
         else:
             data = serializer.errors
 
-        return Response(data,status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -48,16 +48,16 @@ def logout_user(request):
 
 @api_view(["POST"])
 def login_user(request):
+    dicti = {}
     if request.method == "POST":
         data = TokenObtainPairSerializer(data=request.data)
-        print("hello")
         if data.is_valid():
             dicti = {
                 "access": data.validated_data["access"],
                 "refresh": data.validated_data["refresh"],
             }
 
-    return Response(dicti,status=status.HTTP_200_OK)
+    return Response(dicti, status=status.HTTP_200_OK)
 
 
 class CreateCommunityClass(generics.GenericAPIView):
@@ -79,35 +79,43 @@ class CreateCommunityClass(generics.GenericAPIView):
             )
 
 
-class ListCommunity(generics.GenericAPIView,mixins.ListModelMixin):
+class ListCommunity(generics.GenericAPIView, mixins.ListModelMixin):
+
+    permission_classes = [IsAuthenticated]
 
     queryset = Community.objects.all()
     serializer_class = CreateCommunitySerializer
 
-    def get(self,request,*args,**kwargs):
-        return self.list(request,*args,**kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class JoinCommunity(generics.GenericAPIView):
-    def get(self,request):
+    def get(self, request):
         user_in = None
-        user_in = Community.objects.filter(member = request.user)
+        user_in = Community.objects.filter(member=request.user).exists()
         if user_in:
-            return Response({'joined'})
+            return Response({"joined"})
         else:
-            return Response({'join'})
-        
-@api_view(['POST'])
+            return Response({"join"})
+
+
+@api_view(["POST"])
 def SearchCommunity(request):
-    if request.method == 'POST':
+
+    # permission_classes = [IsAuthenticated]
+
+    if request.method == "POST":
         serializer = SearchCommunitySerializer(data=request.data)
         if serializer.is_valid():
-            search_term = serializer.validated_data['search']
-            search_result = Community.objects.filter(community_name__contains=search_term)
+            search_term = serializer.validated_data["search"]
+            search_result = Community.objects.filter(
+                community_name__contains=search_term
+            )
             serialized_data = CreateCommunitySerializer(search_result, many=True)
             return Response(serialized_data.data)
-    
-        
+
+
 class DetailViewOfCommunity(generics.GenericAPIView):
     pass
 

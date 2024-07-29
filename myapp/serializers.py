@@ -41,5 +41,6 @@ class CreateCommunitySerializer(serializers.ModelSerializer):
             "community_name",
         ]
 
+
 class SearchCommunitySerializer(serializers.Serializer):
-    search = serializers.CharField(max_length = 200)
+    search = serializers.CharField(max_length=200)
