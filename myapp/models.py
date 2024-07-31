@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import (
     AbstractUser,
 )
+from django.utils.text import slugify
 
 
 class CustomUser(AbstractUser):
@@ -50,6 +51,15 @@ class Community(models.Model):
         related_name="community_members",
     )
 
+    slug = models.SlugField(blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.community_name)
+            super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.community_name
 
 class PostCommand(models.Model):
     """Class is used to create a command"""
@@ -73,16 +83,17 @@ class CommunityPost(models.Model):
         blank=True,
         null=True,
     )
-    is_likes = models.BooleanField(default=False)
-    count = models.IntegerField(blank=True, default=0)
+    is_likes = models.BooleanField(default=False, null=True, blank=True)
+    counts = models.IntegerField(blank=True, default=0, null=True)
     description = models.TextField()
-    commands = models.ManyToManyField(PostCommand, blank=True)
+    commands = models.ManyToManyField(
+        PostCommand,
+        blank=True,
+    )
     author = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
-        blank=True,
         related_name="author",
-        null=True,
     )
     liked_by = models.ManyToManyField(
         CustomUser,
@@ -93,9 +104,14 @@ class CommunityPost(models.Model):
         Community,
         on_delete=models.CASCADE,
         related_name="community",
-        null=True,
     )
 
+    slug = models.SlugField(blank=True)
+
     def save(self, *args, **kwargs):
-        self.count = len(self.liked_by)
-        super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(CommunityPost, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.community.community_name + "-" + self.title

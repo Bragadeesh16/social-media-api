@@ -8,7 +8,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("myapp", "0004_remove_communitypost_community_community_and_more"),
+        (
+            "myapp",
+            "0004_remove_communitypost_community_community_and_more",
+        ),
     ]
 
     operations = [
