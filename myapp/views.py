@@ -103,7 +103,7 @@ class JoinCommunity(generics.GenericAPIView):
 @api_view(["POST"])
 def SearchCommunity(request):
 
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     if request.method == "POST":
         serializer = SearchCommunitySerializer(data=request.data)
@@ -112,17 +112,56 @@ def SearchCommunity(request):
             search_result = Community.objects.filter(
                 community_name__contains=search_term
             )
-            serialized_data = CreateCommunitySerializer(search_result, many=True)
+            serialized_data = CreateCommunitySerializer(
+                search_result, many=True
+            )
             return Response(serialized_data.data)
 
 
 class DetailViewOfCommunity(generics.GenericAPIView):
-    pass
+    def get(self, request, slug):
+
+        try:
+            community = Community.objects.get(slug = slug)
+            posts = CommunityPost.objects.filter(community=community)
+            community_serializer = CreateCommunitySerializer(community)
+            post_serializer = CreatePostSerializer(posts , many = True,context={'request': request})
+            response_data = {
+                'community': community_serializer.data,
+                'posts': post_serializer.data
+            }
+            return Response(response_data,status=status.HTTP_200_OK)
+
+        except:
+            return Response({"community not found"})
 
 
 class CreatePost(generics.GenericAPIView):
-    pass
 
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CreatePostSerializer(
+            data=request.data, context={"request": request}
+        )
+        if serializer.is_valid():
+            community = Community.objects.get(
+                community_name=serializer.validated_data["community"]
+            )
+            community_post = serializer.save(
+                author=request.user, community=community
+            )
+            community_post.counts = community_post.liked_by.count()
+            community_post.save()
+            return Response(
+                {"message": "post is created"},
+                status=status.HTTP_201_CREATED,
+            )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 class Postlike(generics.GenericAPIView):
     pass

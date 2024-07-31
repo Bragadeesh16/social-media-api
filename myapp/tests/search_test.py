@@ -5,24 +5,27 @@ from myapp.models import *
 
 client = APIClient()
 
+
 @pytest.mark.django_db
 def test_search_community_feature():
 
     token = test_login_user()
 
-    client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+    client.credentials(HTTP_AUTHORIZATION="Bearer " + token)
 
-    Community.objects.create(community_name='django')
+    Community.objects.create(community_name="django")
 
-    Community.objects.create(community_name='django rest framework')
+    Community.objects.create(community_name="django rest framework")
 
-    Community.objects.create(community_name='django pytest')
+    Community.objects.create(community_name="django pytest")
 
-    payload = {
-        'search':'django'
-    }
+    payload = {"search": "django"}
 
-    response = client.post('/search-community/', payload ,format='json')
+    response = client.post(
+        "/search-community/",
+        payload,
+        format="json",
+    )
 
     print(response.data)
 

@@ -35,6 +35,22 @@ urlpatterns = [
         views.CreateCommunityClass.as_view(),
         name="create-community",
     ),
-    path("community-list/", views.ListCommunity.as_view(), name="community-list"),
-    path("search-community/", views.SearchCommunity, name="search-community"),
+    path(
+        "community-list/",
+        views.ListCommunity.as_view(),
+        name="community-list",
+    ),
+    path(
+        "search-community/",
+        views.SearchCommunity,
+        name="search-community",
+    ),
+    path(
+        "new-post/",
+        views.CreatePost.as_view(),
+        name="new-post",
+    ),
+    path(
+        "community/<slug:slug>", views.DetailViewOfCommunity.as_view(), name=""
+    ),
 ]
